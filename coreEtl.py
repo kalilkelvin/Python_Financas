@@ -17,7 +17,7 @@ def dados_cvm(inicio, fim=None, l_cnpj=None):
         try:
             url = 'http://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/inf_diario_fi_{}{:02d}.csv'.format(data.year,
                                                                                                             data.month)
-            download_part = funcAux.downloadWithProgressBar(url)
+            download_part = funcAux.downloadProgressBar(url)
             mensal = pd.read_csv(download_part, sep=';')
 
         except:

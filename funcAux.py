@@ -3,7 +3,7 @@ import os
 import sys
 import requests
 
-def downloadWithProgressBar(url):
+def downloadProgressBar(url):
 
     # Home directory of Mac, pathlib.Path module make this easy.
     home_path = 'venv/assets/'
