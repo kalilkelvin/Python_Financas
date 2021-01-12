@@ -34,9 +34,19 @@ def dados_cvm(inicio, fim=None, l_cnpj=None):
 def calc_retabilidade():
 
     dados = pd.read_csv('venv/assets/historico.csv')
-    dados_cotas = dados[['CNPJ_FUNDO', 'DT_COMPTC', 'VL_QUOTA']]
+    fundos = dados['CNPJ_FUNDO'].unique()
 
-    dados_cotas['VALORIZ'] = dados_cotas.groupby(['CNPJ_FUNDO'])['VL_QUOTA'].transform(lambda x: (x)/x.shift()-1).fillna(0)
-    dados_cotas['RENT'] = dados_cotas.groupby(['CNPJ_FUNDO'])['VALORIZ'].transform(lambda x: x.cumsum()*100).fillna(0)
+    fundos_rent = pd.DataFrame()
 
-    return dados_cotas
+    i = 0
+    while i < len(fundos):
+
+        cotas = dados[dados['CNPJ_FUNDO'] == fundos[i]][['CNPJ_FUNDO', 'DT_COMPTC', 'VL_QUOTA']].reset_index()
+        cotas['RENT'] = cotas[['VL_QUOTA']].apply(lambda x: x / x.shift()-1).fillna(0)
+        cotas['RENT_ACUM'] = cotas[['RENT']].apply(lambda x: x.cumsum()*100)
+
+        fundos_rent = pd.concat([fundos_rent, cotas], ignore_index=True)
+
+        i += 1
+
+    return fundos_rent
